@@ -1,0 +1,28 @@
+<!Doctype html><html><head><style>body {padding: 15px 40px;font-family: Consolas;font-size: 1.25em;f ont-weight: normal;}</style></head><body><h3>Location: C:\Users\Dhaval Sonavaria\Desktop\OOD\OOD\project1\Loader\Loader.h</h3><pre>
+#pragma once
+#include <iostream>
+#include "../../Utilities/CodeUtilities/CodeUtilities.h"
+#include "../../Utilities/StringUtilities/StringUtilities.h"
+#include "../../DirExplorer-Naive/DirExplorerN.h"
+#include"../Display/Display.h"
+#include "../ConvertAndStore/ConvertAndStore.h"
+#include"../Process/Processor.h"
+#include<regex>
+#include <string>
+#include <filesystem>
+using namespace Utilities;
+using namespace FileSystem;
+class Loader
+{
+public:
+	Loader();
+	bool getFiles(int argc, char *argv[]);
+	std::string returnPath (std::string);
+	std::vector<std::string> returnConverterFiles(std::vector<std::string>);
+	std::vector<std::string> returnProcessorFiles(std::vector<std::string>);
+	std::vector<std::string> files, filesToConvert, filesToProcess;
+	std::string path;
+	~Loader();
+};
+
+</pre></body></html>

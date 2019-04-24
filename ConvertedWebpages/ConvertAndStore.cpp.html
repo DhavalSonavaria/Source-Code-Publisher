@@ -1,0 +1,124 @@
+<h3></h3>
+<a href ="ConvertAndStore.h.html">ConvertAndStore.h</a>
+<a href =".html"></a>
+<a href =".html"></a>
+<div class ="toggleComments">////////////////////////////////////////////////////////////////////</div>
+<div class ="toggleComments">// ConvertAndStore.cpp								              //</div>
+<div class ="toggleComments">// ver 1.1                                                        //</div>
+<div class ="toggleComments">// Dhaval Sonavaria, CSE687 - Object Oriented Design, Spring 2019 //</div>
+<div class ="toggleComments">////////////////////////////////////////////////////////////////////</div>
+#include "ConvertAndStore.h"
+using namespace FileSystem;
+ConvertAndStore::ConvertAndStore(std::string file)
+<span class="toggleMethodContents">
+{
+	file_ = file;
+	cf_ = new ClassFunction(file);
+	std::string filename_ = Path::getName(file_);
+	getDepen();
+	bool write = openOutFile();
+	if (write) {
+		writeFile();
+	}
+</span
+<span class="toggleMethodContents">
+}
+std::string ConvertAndStore::returnfile()
+</span
+<span class="toggleMethodContents">
+{
+	return opPath_;
+</span
+<span class="toggleMethodContents">
+}
+bool ConvertAndStore::success()
+<span class="toggleMethodContents">
+</span
+{
+	return success_;
+}
+void ConvertAndStore::getDepen()
+{
+	dependencies_ = cf_-&gt;retDep();
+}
+bool ConvertAndStore::openOutFile() {
+	std::string filename_ = Path::getName(file_);
+	std::string dir("..<div class ="toggleComments">//ConvertedWebpages//");</div>
+	if (!FileSystem::Directory::exists(dir)) <div class ="toggleComments">// it's always important to verify if the directory already exists</div>
+<span class="toggleMethodContents">
+</span
+		FileSystem::Directory::create(dir);
+	std::string outputPath = "..<div class ="toggleComments">//ConvertedWebpages//" + filename_ + ".html"; opPath_ = outputPath;</div>
+	out_.open(outputPath, std::ofstream::out);
+	if (!out_.is_open() || !out_.good()) {
+		std::cout &lt;&lt; "Error -- unable to open output file for writing "+filename_+"."&lt;&lt;std::endl;
+		return false;
+	}
+	return true; success_ = true;
+}
+bool ConvertAndStore::writeFile() {
+		std::vector&lt;std::string&gt; fileContent;
+		HTMLTags ht; WebPage wp;
+		std::vector&lt;std::string&gt; pretags = ht.addPreCodeHTML(filename_);
+		std::ifstream ifs(file_); std::string line;
+		while (ifs.is_open() && !ifs.eof() && (!ifs.fail()) && ifs.good()) {
+			try {
+				while (std::getline(ifs, line))
+				{
+					if (line.empty())
+						continue;
+					wp.skipSpecialChars(line);
+					wp.handlecomments(line);
+					wp.handlecommentsclose(line);
+					fileContent.push_back(line);
+				}ifs.close();
+			}
+			catch (std::ios_base::failure& e) {
+				std::cerr &lt;&lt; e.what() &lt;&lt; '\n';
+			}
+		}
+		taggedfile = cf_-&gt;AddTags(fileContent);
+		for (auto i : pretags)
+		{
+			out_ &lt;&lt; i &lt;&lt; std::endl;
+		}
+		if (!dependencies_.empty()) {
+			for (auto i : dependencies_)
+			{
+				out_ &lt;&lt; i &lt;&lt; std::endl;
+			}
+		}
+</span
+<span class="toggleMethodContents">
+		if (!taggedfile.empty()) {
+			for (auto i : taggedfile)
+			{
+</span
+				out_ &lt;&lt; i &lt;&lt; std::endl;
+<span class="toggleMethodContents">
+			}
+		}
+		addClosingTags();
+		out_.close();
+		std::cout &lt;&lt; filename_ + "  was successfully converted" &lt;&lt; std::endl;
+</span
+		return true; 	
+}
+void ConvertAndStore::addClosingTags()
+{
+	out_ &lt;&lt; std::endl;
+	out_ &lt;&lt; "    &lt;/pre&gt;" &lt;&lt; std::endl; out_ &lt;&lt; "  &lt;/body&gt;" &lt;&lt; std::endl; out_ &lt;&lt; "&lt;/html&gt;" &lt;&lt; std::endl;
+}
+#ifdef TEST_CONVERT
+int main()
+{
+	std::string dir = "..<div class ="toggleComments">//FileSystem.h";</div>
+	ConvertAndStore c(dir);
+	getchar();
+	return 0;
+}
+#endif <div class ="toggleComments">// TEST_CONVERT</div>
+
+    </pre>
+  </body>
+</html>

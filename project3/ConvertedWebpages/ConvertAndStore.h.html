@@ -1,0 +1,120 @@
+<!Doctype html><html><head><style>
+ body {
+          padding: 15px 40px;
+          font-family: Consolas;
+          font-size: 1.25em;
+          font-weight: normal;}
+      .btn-group button {
+          background-color: #4CAF50; /* Green background */
+          border: 1px solid green; /* Green border */
+          color: white; /* White text */
+          padding: 10px 24px; /* Some padding */
+          cursor: pointer; /* Pointer/hand icon */
+          float: right; /* Float the buttons side by side */
+      }
+      .btn-group:after {
+          content: "";
+          clear: both;
+          display: table;
+      }
+      .btn-group button:not(:last-child) {
+          border-right: none; /* Prevent double borders */
+      }
+      btn-group button:hover {
+          background-color: #3e8e41;
+      }
+    .toggleClassDisplay {
+    }
+    .toggleMethodDisplay {
+    }
+    .toggleComments{
+    }
+  </style>
+  <script>
+      function showHideClass(className) {
+        let elems = document.getElementsByClassName(className);
+        if (elems === null) {
+          return;
+        }
+        for (let i = 0; i < elems.length; ++i) {
+          let displayProp = elems[i].style.display;
+          if (displayProp === 'none')
+            elems[i].style['display'] = "inline";
+          else
+            elems[i].style['display'] = "none";
+        }
+      }
+  </script></head><body>
+<div class=" btn-group">
+  <button class ="fa .toggleComments" onclick="showHideClass('toggleComments')">Show or Hide comments</button>
+  <button class = "fa .toggleMethodContents" onclick="showHideClass('toggleMethodDisplay')">Show or Hide Method contents</button>	
+   <button class=" fa .toggleClassDisplay" onclick="showHideClass('toggleClassDisplay')">Show or Hide Class Contents</button>
+</div><pre>
+<h3></h3>
+<a href =.html></a>
+<a href =.html></a>
+<a href =.html></a>
+<a href =ClassFunction.h.html></a>
+<a href =CommentHandler.h.html></a>
+<a href =.html></a>
+<a href =Dependency.h.html></a>
+<a href =.html></a>
+<a href =FileSystem.h.html></a>
+<a href =HTMLTags.h.html></a>
+<div class ="toggleComments">/////////////////////////////////////////////////////////////////////////////</div>
+<div class ="toggleComments">// ConvertAndStore.h - header file for Convert and store                   //</div>
+<div class ="toggleComments">// ver 1.0                                                                 //</div>
+<div class ="toggleComments">// Language:    Visual C++, Visual Studio 2017                             //</div>
+<div class ="toggleComments">// Platform:    HP Spectre, Core i7, Windows 10 SP1                        //</div>
+<div class ="toggleComments">// Application: OOD project 2		                                       //</div>
+<div class ="toggleComments">// Author:      Dhaval Kumar Sonavaria, Syracuse University                //</div>
+<div class ="toggleComments">//              (315) 314-0983, dhsonava@syr.edu                           //</div>
+<div class ="toggleComments">/////////////////////////////////////////////////////////////////////////////</div>
+<div class ="toggleComments">/*
+ * Package Operations:
+ * -------------------
+ * This package contains a .h and a .cpp file that can be used to convert a file to a html file
+ * It uses the filestream for this purpose
+ * A file is converted to a vector and then the AddTags function adds the HTML tags.
+ *Added function to check comments and add the necessary HTML tags
+ * Required Files:
+ * ---------------
+ * ConvertAndStore.cpp
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.0 : 13 Feb 2019
+ * - first release
+ * ver 1.1 : 17 March 2019
+ *- second release
+ */</div>
+ #pragma once
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include "../ClassFunction/ClassFunction.h"
+#include "../CommentHandler/CommentHandler.h"
+#include&lt;fstream&gt;
+#include "../Dependency/Dependency.h"
+#include&lt;string&gt;
+#include "../../FileSystem/FileSystem.h"
+#include"../HTMLTags/HTMLTags.h"
+class ConvertAndStore
+<span class="toggleClassDisplay">
+{
+public:
+	ConvertAndStore(std::string file);
+	std::vector&lt;std::string&gt; filesToProcess;
+	std::vector&lt;std::string&gt; ReturnFilesToProcess();
+	void handlecomments(std::string &line);
+	void handlecommentsclose(std::string &line);
+	std::vector&lt;std::string&gt; fileContent, taggedfile;
+	std::ofstream out_;
+private:
+	
+	void addClosingTags();
+	void skipSpecialChars(std::string& line);	
+};
+
+    </pre>
+  </body>
+</html>

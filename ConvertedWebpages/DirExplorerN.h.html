@@ -1,0 +1,214 @@
+<h3></h3>
+<a href =.html></a>
+<a href =.html></a>
+<a href =.html></a>
+<a href =FileSystem.h.html></a>
+#pragma once
+<div class ="toggleComments">/////////////////////////////////////////////////////////////////////</div>
+<div class ="toggleComments">// DirExplorerN.h - Naive directory explorer                       //</div>
+<div class ="toggleComments">// ver 1.3                                                         //</div>
+<div class ="toggleComments">// Jim Fawcett, CSE687 - Object Oriented Design, Fall 2018         //</div>
+<div class ="toggleComments">/////////////////////////////////////////////////////////////////////</div>
+<div class ="toggleComments">/*
+ * Package Operations:
+ * -------------------
+ * DirExplorerN provides a class, of the same name, that executes a
+ * depth first search of a directory tree rooted at a specified path.
+ * Each time it enters a directory, it invokes its member function
+ * doDir, and for every file in that directory, it invokes doFile.
+ *
+ * We call this a "Naive Directory Explorer" because, while it carries
+ * out its assigned responsibilities well, there is no way to change
+ * what its doDir and doFile functions do, without changing the class
+ * itself.  It would be much better to provide a mechanism to allow
+ * a using application to supply this processing without changing
+ * the Directory Navigator. 
+ *
+ * Other projects in the DirectoryNavigator folder in Repository/Cpp 
+   do just that, in different ways.  
+ * - DirExplorer-Naive (this project):
+ *     Implements basic processing well, but applications have to
+ *     change its code to affect how files and directories are
+ *     handled.
+ * - DirExplorer-Template:
+ *     Applications provide template class parameters to define file
+ *     and directory processing.
+ * - DirExplorer-Inheritance:
+ *     Applications subclass DirExplorerI, overriding virtual functions
+ *     doFile, doDir, and doQuit to define how files and directories
+ *     are handled, and whether processing should terminate before
+ *     visiting all directories.
+ * - DirExplorer-Events:
+ *     Applications use Event Interfaces, published by DirExplorerE,
+ *     by subscribing event-handler functions, and control terminate
+ *      processing using a plug-in interface.
+ * - DirExplorer-Provider:
+ *     Applications implement a file system provider that implements
+ *     a Provider interface published by DirExplorerP.
+ *     
+ * We'll be using the Repository/Cpp solution to illustrate techniques 
+ * for building flexible software.
+ *
+ * Required Files:
+ * ---------------
+ * DirExplorerN.h, DirExplorerN.cpp
+ * FileSystem.h, FileSystem.cpp      <div class ="toggleComments">// Directory and Path classes</div>
+ * StringUtilities.h                 <div class ="toggleComments">// Title function</div>
+ * CodeUtilities.h                   <div class ="toggleComments">// ProcessCmdLine class</div>
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.4 : 24 Jan 2019
+ * - Removed all projects except those needed for DirExplorerN.
+ * ver 1.3 : 19 Aug 2018
+ * - Removed some options to make this version simple.  Those are
+ *   implemented in the more advanced navigators, presented here.
+ * ver 1.2 : 17 Aug 2018
+ * - Moved method definitions to inlines, below the class declaration.
+ * ver 1.1 : 16 Aug 2018
+ * - Made no recursion default, added option /s for recursion.
+ * ver 1.0 : 11 Aug 2018
+ * - first release
+ *
+*/</div>
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+#include "../FileSystem/FileSystem.h"
+namespace FileSystem
+{
+  class DirExplorerN
+  {
+  public:
+<span class="toggleClassDisplay">
+    using patterns = std::vector&lt;std::string&gt;;
+    static std::string version() { return "ver 1.3"; }
+    DirExplorerN(const std::string& path);
+<span class="toggleMethodContents">
+</span
+    <div class ="toggleComments">// set options for analysis</div>
+    void addPattern(const std::string& patt);
+    void recurse(bool doRecurse = true);
+    <div class ="toggleComments">// conduct depth first search</div>
+    void search();
+    void find(const std::string& path);
+    <div class ="toggleComments">// define what happens when a file or dir is encountered</div>
+    void doFile(const std::string& filename);
+    void doDir(const std::string& dirname);
+    <div class ="toggleComments">// extract traversal statistics </div>
+    size_t fileCount();
+    size_t dirCount();
+    void showStats();
+  private:
+    std::string path_;
+    patterns patterns_;
+    size_t dirCount_ = 0;
+    size_t fileCount_ = 0;
+    bool recurse_ = false;
+  };
+  <div class ="toggleComments">//----&lt; construct DirExplorerN instance with default pattern &gt;-----</div>
+  inline DirExplorerN::DirExplorerN(const std::string& path) : path_(path)
+  {
+    patterns_.push_back("*.*");
+  }
+  <div class ="toggleComments">//----&lt; add specified patterns for selecting file names &gt;----------</div>
+  inline void DirExplorerN::addPattern(const std::string& patt)
+  {
+    if (patterns_.size() == 1 && patterns_[0] == "*.*")
+      patterns_.pop_back();
+    patterns_.push_back(patt);
+  }
+  <div class ="toggleComments">//----&lt; set option to recusively walk dir tree &gt;-------------------</div>
+</span>
+<span class="toggleMethodContents">
+  inline void DirExplorerN::recurse(bool doRecurse)
+  {
+</span
+    recurse_ = doRecurse;
+  }
+<span class="toggleMethodContents">
+  <div class ="toggleComments">//----&lt; start Depth First Search at path held in path_ &gt;-----------</div>
+  inline void DirExplorerN::search()
+  {
+    find(path_);
+</span
+  }
+  <div class ="toggleComments">//----&lt; search for directories and their files &gt;-------------------</div>
+<span class="toggleMethodContents">
+  <div class ="toggleComments">/*
+    Recursively finds all the dirs and files on the specified path,
+</span
+    executing doDir when entering a directory and doFile when finding a file
+  */</div>
+<span class="toggleMethodContents">
+  inline void DirExplorerN::find(const std::string& path)
+  {
+</span
+    <div class ="toggleComments">// show current directory</div>
+    std::string fpath = FileSystem::Path::getFullFileSpec(path);
+    doDir(fpath);
+    for (auto patt : patterns_)
+    {
+<span class="toggleMethodContents">
+      std::vector&lt;std::string&gt; files = FileSystem::Directory::getFiles(fpath, patt);
+      for (auto f : files)
+      {
+        doFile(f);  <div class ="toggleComments">// show each file in current directory</div>
+      }
+    }
+    std::vector&lt;std::string&gt; dirs = FileSystem::Directory::getDirectories(fpath);
+    for (auto d : dirs)
+    {
+      if (d == "." || d == "..")
+        continue;
+      std::string dpath = fpath + "\\" + d;
+      if (recurse_)
+      {
+        find(dpath);   <div class ="toggleComments">// recurse into subdirectories</div>
+      }
+      else
+      {
+        doDir(dpath);  <div class ="toggleComments">// show subdirectories</div>
+      }
+    }
+  }
+  <div class ="toggleComments">//----&lt; an application changes to enable specific file ops &gt;-------</div>
+  inline void DirExplorerN::doFile(const std::string& filename)
+  {
+    ++fileCount_;
+    std::cout &lt;&lt; "\n  --   " &lt;&lt; filename;
+  }
+  <div class ="toggleComments">//----&lt; an application changes to enable specific dir ops &gt;--------</div>
+  inline void DirExplorerN::doDir(const std::string& dirname)
+</span
+  {
+    ++dirCount_;
+<span class="toggleMethodContents">
+    std::cout &lt;&lt; "\n  ++ " &lt;&lt; dirname;
+  }
+  <div class ="toggleComments">//----&lt; return number of files processed &gt;-------------------------</div>
+</span
+  inline size_t DirExplorerN::fileCount()
+  {
+<span class="toggleMethodContents">
+    return fileCount_;
+  }
+  <div class ="toggleComments">//----&lt; return number of directories processed &gt;-------------------</div>
+</span
+  inline size_t DirExplorerN::dirCount()
+  {
+<span class="toggleMethodContents">
+    return dirCount_;
+  }
+</span
+  <div class ="toggleComments">//----&lt; show final counts for files and dirs &gt;---------------------</div>
+  inline void DirExplorerN::showStats()
+<span class="toggleMethodContents">
+  {
+    std::cout &lt;&lt; "\n\n  processed " &lt;&lt; fileCount_ &lt;&lt; " files in " &lt;&lt; dirCount_ &lt;&lt; " directories";
+</span
+  }
+}
+
+    </pre>
+  </body>
+</html>

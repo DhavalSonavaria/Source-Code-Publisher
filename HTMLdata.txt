@@ -1,0 +1,52 @@
+<!Doctype html><html><head><style>
+ body {
+          padding: 15px 40px;
+          font-family: Consolas;
+          font-size: 1.25em;
+          font-weight: normal;}
+      .btn-group button {
+          background-color: #4CAF50; /* Green background */
+          border: 1px solid green; /* Green border */
+          color: white; /* White text */
+          padding: 10px 24px; /* Some padding */
+          cursor: pointer; /* Pointer/hand icon */
+          float: right; /* Float the buttons side by side */
+      }
+      .btn-group:after {
+          content: "";
+          clear: both;
+          display: table;
+      }
+      .btn-group button:not(:last-child) {
+          border-right: none; /* Prevent double borders */
+      }
+      btn-group button:hover {
+          background-color: #3e8e41;
+      }
+    .toggleClassDisplay {
+    }
+    .toggleMethodDisplay {
+    }
+    .toggleComments{
+    }
+  </style>
+  <script>
+      function showHideClass(className) {
+        let elems = document.getElementsByClassName(className);
+        if (elems === null) {
+          return;
+        }
+        for (let i = 0; i < elems.length; ++i) {
+          let displayProp = elems[i].style.display;
+          if (displayProp === 'none')
+            elems[i].style['display'] = "inline";
+          else
+            elems[i].style['display'] = "none";
+        }
+      }
+  </script></head><body>
+<div class=" btn-group">
+  <button class ="fa .toggleComments" onclick="showHideClass('toggleComments')">Show or Hide comments</button>
+  <button class = "fa .toggleMethodContents" onclick="showHideClass('toggleMethodDisplay')">Show or Hide Method contents</button>	
+   <button class=" fa .toggleClassDisplay" onclick="showHideClass('toggleClassDisplay')">Show or Hide Class Contents</button>
+</div><pre>

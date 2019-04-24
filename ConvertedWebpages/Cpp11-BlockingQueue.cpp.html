@@ -1,0 +1,146 @@
+<!Doctype html><html><head><style>
+ body {
+          padding: 15px 40px;
+          font-family: Consolas;
+          font-size: 1.25em;
+          font-weight: normal;}
+      .btn-group button {
+          background-color: #4CAF50; /* Green background */
+          border: 1px solid green; /* Green border */
+          color: white; /* White text */
+          padding: 10px 24px; /* Some padding */
+          cursor: pointer; /* Pointer/hand icon */
+          float: right; /* Float the buttons side by side */
+      }
+      .btn-group:after {
+          content: "";
+          clear: both;
+          display: table;
+      }
+      .btn-group button:not(:last-child) {
+          border-right: none; /* Prevent double borders */
+      }
+      btn-group button:hover {
+          background-color: #3e8e41;
+      }
+    .toggleClassDisplay {
+    }
+    .toggleMethodDisplay {
+    }
+    .toggleComments{
+    }
+  </style>
+  <script>
+      function showHideClass(className) {
+        let elems = document.getElementsByClassName(className);
+        if (elems === null) {
+          return;
+        }
+        for (let i = 0; i < elems.length; ++i) {
+          let displayProp = elems[i].style.display;
+          if (displayProp === 'none')
+            elems[i].style['display'] = "inline";
+          else
+            elems[i].style['display'] = "none";
+        }
+      }
+  </script></head><body>
+<div class=" btn-group">
+  <button class ="fa .toggleComments" onclick="showHideClass('toggleComments')">Show or Hide comments</button>
+  <button class = "fa .toggleMethodContents" onclick="showHideClass('toggleMethodDisplay')">Show or Hide Method contents</button>	
+   <button class=" fa .toggleClassDisplay" onclick="showHideClass('toggleClassDisplay')">Show or Hide Class Contents</button>
+</div><pre>
+<h3></h3>
+<a href =".html"></a>
+<a href =".html"></a>
+<a href =".html"></a>
+<a href =".html"></a>
+<a href =".html"></a>
+<a href =".html"></a>
+<a href =".html"></a>
+<a href ="Cpp11-BlockingQueue.h.html">Cpp11-BlockingQueue.h</a>
+<a href =".html"></a>
+<a href =".html"></a>
+<div class ="toggleComments">///////////////////////////////////////////////////////////////</div>
+<div class ="toggleComments">// Cpp11-BlockingQueue.cpp - Thread-safe Blocking Queue      //</div>
+<div class ="toggleComments">// ver 1.2                                                   //</div>
+<div class ="toggleComments">// Jim Fawcett, CSE687 - Object Oriented Design, Spring 2013 //</div>
+<div class ="toggleComments">///////////////////////////////////////////////////////////////</div>
+#include &lt;condition_variable&gt;
+#include &lt;mutex&gt;
+#include &lt;thread&gt;
+#include &lt;queue&gt;
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include "Cpp11-BlockingQueue.h"
+#ifdef TEST_BLOCKINGQUEUE
+std::mutex ioLock;
+void test(BlockingQueue&lt;std::string&gt;* pQ)
+{
+  std::string msg;
+  do
+  {
+<span class="toggleMethodContents">
+    msg = pQ-&gt;deQ();
+    {
+      std::lock_guard&lt;std::mutex&gt; l(ioLock);
+      std::cout &lt;&lt; "\n  thread deQed " &lt;&lt; msg.c_str();
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  } while(msg != "quit");
+}
+int main()
+{
+  std::cout &lt;&lt; "\n  Demonstrating C++11 Blocking Queue";
+</span
+  std::cout &lt;&lt; "\n ====================================";
+<span class="toggleMethodContents">
+  BlockingQueue&lt;std::string&gt; q;
+  std::thread t(test, &q);
+  for(int i=0; i&lt;15; ++i)
+  {
+    std::ostringstream temp;
+    temp &lt;&lt; i;
+    std::string msg = std::string("msg#") + temp.str();
+    {
+      std::lock_guard&lt;std::mutex&gt; l(ioLock);
+      std::cout &lt;&lt; "\n   main enQing " &lt;&lt; msg.c_str();
+    }
+    q.enQ(msg);
+    std::this_thread::sleep_for(std::chrono::milliseconds(3));
+  }
+  q.enQ("quit");
+  t.join();
+  std::cout &lt;&lt; "\n";
+  std::cout &lt;&lt; "\n  Making move copy of BlockingQueue";
+  std::cout &lt;&lt; "\n -----------------------------------";
+  std::string msg = "test";
+  q.enQ(msg);
+  std::cout &lt;&lt; "\n  before move:";
+  std::cout &lt;&lt; "\n    q.size() = " &lt;&lt; q.size();
+  std::cout &lt;&lt; "\n    q.front() = " &lt;&lt; q.front();
+  BlockingQueue&lt;std::string&gt; q2 = std::move(q);  <div class ="toggleComments">// move assignment</div>
+  std::cout &lt;&lt; "\n  after move:";
+  std::cout &lt;&lt; "\n    q2.size() = " &lt;&lt; q2.size();
+  std::cout &lt;&lt; "\n    q.size() = " &lt;&lt; q.size();
+  std::cout &lt;&lt; "\n    q2 element = " &lt;&lt; q2.deQ() &lt;&lt; "\n";
+  std::cout &lt;&lt; "\n  Move assigning state of BlockingQueue";
+  std::cout &lt;&lt; "\n ---------------------------------------";
+  BlockingQueue&lt;std::string&gt; q3;
+  q.enQ("test");
+  std::cout &lt;&lt; "\n  before move:";
+  std::cout &lt;&lt; "\n    q.size() = " &lt;&lt; q.size();
+  std::cout &lt;&lt; "\n    q.front() = " &lt;&lt; q.front();
+  q3 = std::move(q);
+  std::cout &lt;&lt; "\n  after move:";
+  std::cout &lt;&lt; "\n    q.size() = " &lt;&lt; q.size();
+  std::cout &lt;&lt; "\n    q3.size() = " &lt;&lt; q3.size();
+  std::cout &lt;&lt; "\n    q3 element = " &lt;&lt; q3.deQ() &lt;&lt; "\n";
+  std::cout &lt;&lt; "\n\n";
+}
+#endif
+
+    </pre>
+  </body>
+</html>
